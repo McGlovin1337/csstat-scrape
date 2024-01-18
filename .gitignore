@@ -1,0 +1,3 @@
+.venv/
+geckodriver.exe
+player_stats.json
