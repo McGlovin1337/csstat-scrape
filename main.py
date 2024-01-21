@@ -25,21 +25,40 @@ def parse_html(raw_stats: dict) -> list[dict]:
         name = soup.find('div', id='player-name').text.strip()
         ic(name)
 
-        rating = float(soup.find('div', id='rating').text.strip())
+        try:
+            rating = float(soup.find('div', id='rating').text.strip())
+        except AttributeError:
+            rating = 0
         ic(rating)
 
-        kpd = float(soup.find('div', id='kpd').text.strip())
+        try:
+            kpd = float(soup.find('div', id='kpd').text.strip())
+        except AttributeError:
+            kpd = 0
         ic(kpd)
 
-        adr = int(soup.find('img', src='https://static.csstats.gg/images/damage-icon.png').find_next().text.strip().split(' ')[0].strip())
+        try:
+            adr = int(soup.find('img', src='https://static.csstats.gg/images/damage-icon.png').find_next().text.strip().split(' ')[0].strip())
+        except AttributeError:
+            adr = 0
         ic(adr)
 
-        win_rate = int(soup.find('img', src='https://static.csstats.gg/images/winrate-icon.png').find_next().text.split('%')[0])
+        try:
+            win_rate = int(soup.find('img', src='https://static.csstats.gg/images/winrate-icon.png').find_next().text.split('%')[0])
+        except AttributeError:
+            win_rate = 0
         ic(win_rate)
 
-        played = soup.find('img', src='https://static.csstats.gg/images/winrate-icon.png').find_next('span', class_='total-label')
-        games = int(played.find_next('span', class_='total-value').text.strip()) if played.text.lower() == 'played' else 0
+        try:
+            played = soup.find('img', src='https://static.csstats.gg/images/winrate-icon.png').find_next('span', class_='total-label')
+            games = int(played.find_next('span', class_='total-value').text.strip()) if played.text.lower() == 'played' else 0
+        except AttributeError:
+            games = 0
         ic(games)
+
+        avatar = soup.find('div', id='player-avatar').find_next('img')
+        avatar_src = avatar['src']
+        ic(avatar_src)
 
         stats.append({
             'Name': name,
@@ -47,7 +66,8 @@ def parse_html(raw_stats: dict) -> list[dict]:
             'KpD': kpd,
             'ADR': adr,
             'Games': games,
-            'Win_Rate': win_rate
+            'Win_Rate': win_rate,
+            'Avatar': avatar_src
         })
 
     return stats
