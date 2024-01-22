@@ -26,6 +26,12 @@ def parse_html(raw_stats: dict) -> list[dict]:
         ic(name)
 
         try:
+            rank = int(soup.find('div', class_='rank').find_next('span').text.strip().replace(',', ''))
+        except (AttributeError, ValueError):
+            rank = 0
+        ic(rank)
+
+        try:
             rating = float(soup.find('div', id='rating').text.strip())
         except AttributeError:
             rating = 0
@@ -62,6 +68,7 @@ def parse_html(raw_stats: dict) -> list[dict]:
 
         stats.append({
             'Name': name,
+            'Rank': rank,
             'Rating': rating,
             'KpD': kpd,
             'ADR': adr,
