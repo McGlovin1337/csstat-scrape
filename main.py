@@ -39,7 +39,13 @@ def parse_html(raw_stats: dict) -> list[dict]:
             'Deaths': 0,
             'Assists': 0,
             'Kill_Shot_Ratio': 0.0,
-            'Avatar': ''
+            'Avatar': '',
+            'Maps': {},
+            '1v1': 0,
+            '1v2': 0,
+            '1v3': 0,
+            '1v4': 0,
+            '1v5': 0
         }
 
         soup = BeautifulSoup(rs, 'html.parser')
@@ -107,11 +113,24 @@ def parse_html(raw_stats: dict) -> list[dict]:
             player_stats['Kills'] = int(match_frame['K'].sum())
             player_stats['Deaths'] = int(match_frame['D'].sum())
             player_stats['Assists'] = int(match_frame['A'].sum())
+            player_stats['1v1'] = int(match_frame['1v1'].sum())
+            player_stats['1v2'] = int(match_frame['1v2'].sum())
+            player_stats['1v3'] = int(match_frame['1v3'].sum())
+            player_stats['1v4'] = int(match_frame['1v4'].sum())
+            player_stats['1v5'] = int(match_frame['1v5'].sum())
+            map_stats = match_frame.groupby(match_frame['Map'], as_index=False).size().to_dict('tight')['data']
+            ic(map_stats)
+            player_stats['Maps'].update({f'{m[0]}': m[1] for m in map_stats})
             ic(player_stats['Worst_Match'])
             ic(player_stats['Best_Match'])
             ic(player_stats['Kills'])
             ic(player_stats['Deaths'])
             ic(player_stats['Assists'])
+            ic(player_stats['1v1'])
+            ic(player_stats['1v2'])
+            ic(player_stats['1v3'])
+            ic(player_stats['1v4'])
+            ic(player_stats['1v5'])
 
         try:
             weapon_table = soup.find('div', id='player-weapons').find_next('table')
