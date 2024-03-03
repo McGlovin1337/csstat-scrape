@@ -45,7 +45,10 @@ def parse_html(raw_stats: dict) -> list[dict]:
             '1v2': 0,
             '1v3': 0,
             '1v4': 0,
-            '1v5': 0
+            '1v5': 0,
+            '3k': 0,
+            '4k': 0,
+            '5k': 0
         }
 
         soup = BeautifulSoup(rs, 'html.parser')
@@ -118,6 +121,9 @@ def parse_html(raw_stats: dict) -> list[dict]:
             player_stats['1v3'] = int(match_frame['1v3'].sum())
             player_stats['1v4'] = int(match_frame['1v4'].sum())
             player_stats['1v5'] = int(match_frame['1v5'].sum())
+            player_stats['3k'] = int(match_frame['3k'].sum())
+            player_stats['4k'] = int(match_frame['4k'].sum())
+            player_stats['5k'] = int(match_frame['5k'].sum())
             map_stats = match_frame.groupby(match_frame['Map'], as_index=False).size().to_dict('tight')['data']
             ic(map_stats)
             player_stats['Maps'].update({f'{m[0]}': m[1] for m in map_stats})
@@ -131,6 +137,9 @@ def parse_html(raw_stats: dict) -> list[dict]:
             ic(player_stats['1v3'])
             ic(player_stats['1v4'])
             ic(player_stats['1v5'])
+            ic(player_stats['3k'])
+            ic(player_stats['4k'])
+            ic(player_stats['5k'])
 
         try:
             weapon_table = soup.find('div', id='player-weapons').find_next('table')
