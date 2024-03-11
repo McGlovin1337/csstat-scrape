@@ -48,7 +48,8 @@ def parse_html(raw_stats: dict) -> list[dict]:
             '1v5': 0,
             '3k': 0,
             '4k': 0,
-            '5k': 0
+            '5k': 0,
+            'UD': 0
         }
 
         soup = BeautifulSoup(rs, 'html.parser')
@@ -148,10 +149,23 @@ def parse_html(raw_stats: dict) -> list[dict]:
 
         if weapon_table is not None:
             weapon_frame = pd.read_html(str(weapon_table))[0]
+            weapon_frame.columns = weapon_frame.columns.str.replace('Unnamed: 1', 'Weapon')
             total_shots = int(weapon_frame['Shots'].sum())
             total_kills = int(weapon_frame['Kills'].sum())
             ksr = (total_kills / total_shots) * 100
             player_stats['Kill_Shot_Ratio'] = round(ksr, 2)
+            ud_weapons = weapon_frame[
+                    weapon_frame['Weapon'].isin([
+                        'Molotov',
+                        'HE Grenade',
+                        'Decoy Grenade',
+                        'Smoke Grenade',
+                        'Incendiary Projectile',
+                        'Molotov Projectile',
+                        'Flashbang'
+                    ])
+                ]
+            player_stats['UD'] = int(ud_weapons['Damage'].sum())
 
         stats.append(player_stats)
 
